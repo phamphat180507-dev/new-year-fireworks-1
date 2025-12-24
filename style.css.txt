@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #020b1a; /* Màu xanh đêm đậm */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.overlay {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    pointer-events: none; /* Cho phép tương tác xuyên qua text */
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+h1 { margin: 0; font-size: 2.5rem; }
+p { opacity: 0.7; }
