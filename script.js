@@ -29,8 +29,11 @@ particles.geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 
 scene.add(particles, new THREE.AmbientLight(0xffffff, 0.5));
 
 // Nhận diện tay (MediaPipe)
-const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-hands.setOptions({ maxNumHands: 1, minDetectionConfidence: 0.7 });
+const hands = new Hands({
+  locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424515/${file}`;
+  }
+});
 hands.onResults((res) => {
     if (res.multiHandLandmarks?.[0]) {
         const finger = res.multiHandLandmarks[0][8];
@@ -66,5 +69,6 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
+
 
 
