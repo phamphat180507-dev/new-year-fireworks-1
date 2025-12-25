@@ -55,8 +55,10 @@ function countFingers(landmarks) {
 }
 
 const hands = new Hands({
-  locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  locateFile: (file) =>
+    `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1640029074/${file}`
 });
+
 
 hands.setOptions({
   maxNumHands: 1,
@@ -93,3 +95,4 @@ const camera = new Camera(video, {
 });
 
 camera.start();
+
