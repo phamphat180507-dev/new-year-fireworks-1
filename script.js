@@ -1,74 +1,95 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-camera.position.set(0, 3, 8);
+canvas.width = 640;
+canvas.height = 480;
 
-// Tạo cây thông & Ngôi sao
-const tree = new THREE.Group();
-const greenMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
-for(let i=0; i<4; i++) {
-    const layer = new THREE.Mesh(new THREE.ConeGeometry(2-i*0.4, 1.5, 32), greenMat);
-    layer.position.y = i * 0.9;
-    tree.add(layer);
-}
-scene.add(tree);
+let blinkSpeed = 500;
+let scale = 1;
+let lightsOn = true;
+let lastBlink = Date.now();
 
-const star = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 24), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
-star.position.y = 3.6;
-scene.add(star);
+function drawTree(cx, by, s, lights) {
+  const h = 220 * s;
+  const w = 140 * s;
 
-const particles = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: 0.05, color: 0xffffff }));
-const posArray = new Float32Array(1500 * 3);
-for(let i=0; i<4500; i++) posArray[i] = (Math.random() - 0.5) * 20;
-particles.geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-scene.add(particles, new THREE.AmbientLight(0xffffff, 0.5));
-
-// Nhận diện tay (MediaPipe)
-const hands = new Hands({
-  locateFile: (file) => {
-    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424515/${file}`;
+  ctx.fillStyle = "#0a7a28";
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx, by - h + i * 70);
+    ctx.lineTo(cx - w + i * 30, by - i * 70);
+    ctx.lineTo(cx + w - i * 30, by - i * 70);
+    ctx.closePath();
+    ctx.fill();
   }
-});
-hands.onResults((res) => {
-    if (res.multiHandLandmarks?.[0]) {
-        const finger = res.multiHandLandmarks[0][8];
-        particles.material.color.setRGB(finger.x, 1-finger.y, 0.5);
-        // Chạm ngôi sao
-        if (finger.y < 0.3 && finger.x > 0.4 && finger.x < 0.6) {
-            star.scale.set(2, 2, 2); star.material.color.setHex(0xffffff);
-        } else {
-            star.scale.set(1, 1, 1); star.material.color.setHex(0xffff00);
-        }
+
+  // thân cây
+  ctx.fillStyle = "#6b3e26";
+  ctx.fillRect(cx - 15 * s, by, 30 * s, 40 * s);
+
+  // đèn
+  if (lights) {
+    for (let i = 0; i < 25; i++) {
+      ctx.fillStyle = ["red", "yellow", "cyan", "magenta"][Math.floor(Math.random() * 4)];
+      ctx.beginPath();
+      ctx.arc(
+        cx + (Math.random() - 0.5) * w * 1.4,
+        by - Math.random() * h,
+        4,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
     }
+  }
+}
+
+function countFingers(landmarks) {
+  const tips = [8, 12, 16, 20];
+  let open = 0;
+  tips.forEach(tip => {
+    if (landmarks[tip].y < landmarks[tip - 2].y) open++;
+  });
+  return open;
+}
+
+const hands = new Hands({
+  locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
 
-const cam = new Camera(document.createElement('video'), { onFrame: async () => await hands.send({image: cam.video}), width: 640, height: 480 });
+hands.setOptions({
+  maxNumHands: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
+});
 
-document.getElementById('playButton').onclick = () => {
-    const audio = document.getElementById('bgMusic');
-    
-    // Cố gắng phát nhạc, nếu lỗi thì chỉ in ra log chứ không dừng cả chương trình
-    audio.play().catch(e => console.log("Nhạc bị chặn, nhưng phép màu vẫn tiếp tục!"));
+hands.onResults(results => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Luôn luôn khởi chạy Camera và Animation
-    if (typeof cam !== 'undefined') cam.start();
-    
-    document.getElementById('playButton').style.display = 'none';
-    
-    // Đảm bảo vòng lặp animate đã chạy
-    animate(); 
-};
-function animate() {
-    requestAnimationFrame(animate);
-    tree.rotation.y += 0.005;
-    renderer.render(scene, camera);
-}
-animate();
+  if (results.multiHandLandmarks) {
+    results.multiHandLandmarks.forEach(hand => {
+      const fingers = countFingers(hand);
 
+      blinkSpeed = fingers >= 4 ? 200 : 800;
+      scale = Math.min(1.5, Math.max(0.6, 1.4 - hand[0].y));
+    });
+  }
 
+  if (Date.now() - lastBlink > blinkSpeed) {
+    lightsOn = !lightsOn;
+    lastBlink = Date.now();
+  }
 
+  drawTree(canvas.width / 2, canvas.height - 80, scale, lightsOn);
+});
+
+const camera = new Camera(video, {
+  onFrame: async () => {
+    await hands.send({ image: video });
+  },
+  width: 640,
+  height: 480
+});
+
+camera.start();
