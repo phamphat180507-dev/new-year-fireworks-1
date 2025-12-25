@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>🎄 Điều khiển cây thông bằng cử chỉ tay</title>
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- MediaPipe - BẮT BUỘC LOAD TRƯỚC -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1640029074/drawing_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1640029074/hands.js"></script>
+  <meta charset="UTF-8">
+  <title>Camera Stable Test</title>
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    video {
+      width: 640px;
+      height: 480px;
+      border-radius: 12px;
+      margin-top: 20px;
+      background: #111;
+    }
+  </style>
 </head>
-
 <body>
-  <h1>🎄 Điều khiển cây thông bằng cử chỉ tay</h1>
 
-  <div class="container">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
-  </div>
+<h1>✅ Camera chạy ổn định (GitHub Pages)</h1>
+<p>Nếu bạn thấy hình webcam → code OK</p>
 
-  <!-- ❗ script.js PHẢI Ở CUỐI BODY -->
-  <script src="script.js"></script>
+<video id="cam" autoplay playsinline></video>
+
+<script>
+(async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+    document.getElementById("cam").srcObject = stream;
+    console.log("✅ Camera started successfully");
+  } catch (err) {
+    console.error("❌ Camera error:", err);
+  }
+})();
+</script>
+
 </body>
 </html>
