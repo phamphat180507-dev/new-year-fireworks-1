@@ -1,18 +1,19 @@
 html, body {
   margin: 0;
+  padding: 0;
   overflow: hidden;
   background: black;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
 }
 
-/* CAMERA */
+/* CAMERA (CHỈ ĐỂ THAM KHẢO) */
 #video {
   position: fixed;
-  top: 0;
-  left: 0;
+  bottom: 10px;
+  right: 10px;
   width: 160px;
   height: 120px;
-  opacity: 0.3;
+  opacity: 0.25;
   z-index: 1;
 }
 
@@ -21,7 +22,7 @@ html, body {
   position: fixed;
   inset: 0;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: none; /* 🔴 CỰC KỲ QUAN TRỌNG */
 }
 
 /* START */
@@ -31,7 +32,7 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  padding: 12px 30px;
+  padding: 12px 28px;
   font-size: 18px;
   cursor: pointer;
 }
@@ -43,14 +44,19 @@ html, body {
   width: 100%;
   text-align: center;
   font-size: 64px;
+  font-weight: bold;
   color: gold;
+  text-shadow: 0 0 20px red, 0 0 40px yellow;
   z-index: 10;
 }
 
 .hidden { display: none; }
-.visible { display: block; animation: fadeIn 2s ease; }
+.visible {
+  display: block;
+  animation: fadeIn 2s ease forwards;
+}
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.8); }
+  from { opacity: 0; transform: scale(0.85); }
   to   { opacity: 1; transform: scale(1); }
 }
