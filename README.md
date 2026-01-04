@@ -1,4 +1,4 @@
-christmas-3d-tree/
+new-year-fireworks/
 ├── index.html
 ├── style.css
 ├── script.js
