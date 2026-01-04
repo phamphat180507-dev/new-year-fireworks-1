@@ -57,8 +57,11 @@ function createFirework(x, y, z) {
 
 // --- NHẬN DIỆN BÀN TAY (MEDIAPIPE) ---
 const videoElement = document.createElement('video');
-const hands = new Hands({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424515/${file}`
+// Thay thế đoạn khởi tạo hands cũ bằng đoạn này
+const hands = new window.Hands({
+    locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    }
 });
 hands.setOptions({
     maxNumHands: 1,
@@ -176,3 +179,4 @@ window.addEventListener('resize', () => {
 
 // Chạy animate lần đầu (sẽ bị pause cho đến khi nhấn nút)
 // animate(); // Bỏ comment nếu muốn scene chạy liên tục từ đầu
+
