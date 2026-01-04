@@ -61,7 +61,6 @@ function createFirework(x, y, z) {
    if (fireworkCount >= goalCount) {
        showNewYearMessage();
    }
-}
 // --- NHẬN DIỆN BÀN TAY (MEDIAPIPE) ---
 const videoElement = document.createElement('video');
 const hands = new window.Hands({
@@ -185,11 +184,13 @@ window.addEventListener('resize', () => {
 
 // Chạy animate lần đầu (sẽ bị pause cho đến khi nhấn nút)
 // animate(); // Bỏ comment nếu muốn scene chạy liên tục từ đầu
+
 function showNewYearMessage() {
     const textElement = document.getElementById('newYearText');
     if (textElement) {
         textElement.classList.add('visible');
     }
 }
+
 
 
