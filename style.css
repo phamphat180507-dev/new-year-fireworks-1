@@ -1,24 +1,33 @@
-body {
-  background: radial-gradient(circle, #00111a, #000);
-  color: white;
-  text-align: center;
-  font-family: Arial, sans-serif;
+body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Poppins', sans-serif; }
+#startButton {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    padding: 20px 40px; font-size: 24px; border-radius: 50px;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white;
+    border: none; cursor: pointer; z-index: 100; box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+    animation: pulse 1.5s infinite alternate;
+}
+#startButton:hover { transform: translate(-50%, -50%) scale(1.1); }
+@keyframes pulse {
+    from { box-shadow: 0 0 15px rgba(255, 0, 0, 0.7); }
+    to { box-shadow: 0 0 30px rgba(255, 0, 0, 1); }
 }
 
-.container {
-  position: relative;
-  width: 640px;
-  margin: auto;
+#newYearText {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 8vw; font-weight: bold; text-align: center;
+    color: white; text-shadow: 0 0 20px #fff, 0 0 40px #f0f, 0 0 60px #0ff;
+    z-index: 99; opacity: 0; transition: opacity 2s ease-in-out;
 }
+#newYearText.visible { opacity: 1; animation: rainbowText 5s infinite; }
+.hidden { display: none; }
 
-video, canvas {
-  width: 640px;
-  height: 480px;
-  border-radius: 12px;
-}
-
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+@keyframes rainbowText {
+    0% { color: red; text-shadow: 0 0 20px red; }
+    14% { color: orange; text-shadow: 0 0 20px orange; }
+    28% { color: yellow; text-shadow: 0 0 20px yellow; }
+    42% { color: green; text-shadow: 0 0 20px green; }
+    56% { color: blue; text-shadow: 0 0 20px blue; }
+    70% { color: indigo; text-shadow: 0 0 20px indigo; }
+    84% { color: violet; text-shadow: 0 0 20px violet; }
+    100% { color: red; text-shadow: 0 0 20px red; }
 }
