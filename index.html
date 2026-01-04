@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Controlled Fireworks</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <title>New Year Fireworks</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <button id="startButton">🎆 Kích hoạt Pháo Hoa</button>
-    <div id="newYearText" class="hidden">HAPPY NEW YEAR!</div>
-    <div id="happyNewYear">Happy New Year</div>
 
-   <audio id="bgMusic" loop>
-    <source src="https://storage.googleapis.com/codeskulptor-demos/pysparkling/MerryChristmas.ogg" type="audio/ogg">
-</audio>
+  <!-- Canvas Three.js -->
+  <canvas id="canvas"></canvas>
 
-    <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
-    </script>
-    <script type="module" src="script.js"></script>
+  <!-- NÚT BẮT ĐẦU -->
+  <button id="startButton">Start</button>
+
+  <!-- CHỮ HAPPY NEW YEAR -->
+  <div id="happyNewYear" class="hidden">
+    🎆 Happy New Year 🎆
+  </div>
+
+  <!-- NHẠC (nếu có) -->
+  <audio id="bgMusic" src="music.mp3"></audio>
+
+  <!-- SCRIPT -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
-
-
-
