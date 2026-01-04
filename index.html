@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fireworks New Year 2026</title>
+    <title>Hand Controlled Fireworks</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424515/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.4.1646424515/camera_utils.js"></script>
 </head>
 <body>
-    <button id="startButton">🎆 KÍCH HOẠT PHÁO HOA</button>
-    <div id="newYearText">HAPPY NEW YEAR!</div>
+    <button id="startButton">🎆 Kích hoạt Pháo Hoa</button>
+    <div id="newYearText" class="hidden">HAPPY NEW YEAR!</div>
 
     <audio id="bgMusic" loop>
-        <source src="https://storage.googleapis.com/codeskulptor-demos/pysparkling/MerryChristmas.ogg" type="audio/ogg">
+        <source src="https://www.chosic.com/wp-content/uploads/2021/11/fireworks-display-by-lesfm.mp3" type="audio/mpeg">
     </audio>
 
     <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
     </script>
     <script type="module" src="script.js"></script>
 </body>
