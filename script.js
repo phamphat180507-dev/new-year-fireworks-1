@@ -5,34 +5,37 @@ const ctx = canvas.getContext('2d');
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-/* ====== STATE ====== */
+/* ========= STATE ========= */
 let fireworks = [];
-let fireworkCounter = 0;
-const MAX_FIREWORKS = 25;
+let fireworkCount = 0;
+const MAX_FIREWORKS = 20;
+
 let lastGestureTime = Date.now();
+let lastFireworkTime = 0;
 let textShown = false;
+let cameraStarted = false;
 
-/* ====== CAMERA ====== */
+/* ========= CAMERA ========= */
 navigator.mediaDevices.getUserMedia({ video: true })
-  .then(stream => video.srcObject = stream);
+  .then(stream => video.srcObject = stream)
+  .catch(err => console.error('Camera error:', err));
 
-/* ====== FIREWORK ====== */
+/* ========= FIREWORK ========= */
 class Firework {
   constructor(x, y) {
+    this.life = 160;
     this.particles = [];
-    this.life = 140;
-
-    const colors = ['red','orange','yellow','lime','cyan','blue','magenta','white'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
 
     for (let i = 0; i < 120; i++) {
       this.particles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 8,
-        vy: (Math.random() - 0.5) * 8,
-        alpha: 1,
-        color
+        vx: (Math.random() - 0.5) * 9,
+        vy: (Math.random() - 0.5) * 9,
+        a: 1,
+        r: Math.random() * 255,
+        g: Math.random() * 255,
+        b: Math.random() * 255
       });
     }
   }
@@ -43,33 +46,19 @@ class Firework {
       p.x += p.vx;
       p.y += p.vy;
       p.vy += 0.04;
-      p.alpha -= 0.008;
+      p.a -= 0.006;
     });
   }
 
   draw() {
     this.particles.forEach(p => {
-      ctx.fillStyle = `rgba(${getRGB(p.color)},${p.alpha})`;
+      ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},${p.a})`;
       ctx.fillRect(p.x, p.y, 3, 3);
     });
   }
 }
 
-function getRGB(color) {
-  const map = {
-    red: '255,0,0',
-    orange: '255,140,0',
-    yellow: '255,255,0',
-    lime: '0,255,0',
-    cyan: '0,255,255',
-    blue: '0,100,255',
-    magenta: '255,0,255',
-    white: '255,255,255'
-  };
-  return map[color];
-}
-
-/* ====== MEDIAPIPE ====== */
+/* ========= MEDIAPIPE ========= */
 const hands = new Hands({
   locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
 });
@@ -81,36 +70,45 @@ hands.setOptions({
 });
 
 hands.onResults(res => {
-  if (res.multiHandLandmarks) {
-    const p = res.multiHandLandmarks[0][8];
+  if (!res.multiHandLandmarks) return;
 
-    fireworks.push(new Firework(
-      p.x * canvas.width,
-      p.y * canvas.height
-    ));
+  const now = Date.now();
+  if (now - lastFireworkTime < 300) return; // 🔒 CHỐNG LAG
 
-    fireworkCounter++;
-    lastGestureTime = Date.now();
-  }
+  const tip = res.multiHandLandmarks[0][8];
+  fireworks.push(new Firework(
+    tip.x * canvas.width,
+    tip.y * canvas.height
+  ));
+
+  fireworkCount++;
+  lastGestureTime = now;
+  lastFireworkTime = now;
 });
 
-/* ====== CAMERA LOOP ====== */
-const cam = new Camera(video, {
-  onFrame: async () => await hands.send({ image: video }),
-  width: 640,
-  height: 480
-});
-
-/* ====== START ====== */
+/* ========= START ========= */
 document.getElementById('startButton').onclick = () => {
+  if (cameraStarted) return;
+
+  const cam = new Camera(video, {
+    onFrame: async () => {
+      if (video.readyState >= 2) {
+        await hands.send({ image: video });
+      }
+    },
+    width: 640,
+    height: 480
+  });
+
   cam.start();
+  cameraStarted = true;
   document.getElementById('startButton').style.display = 'none';
   animate();
 };
 
-/* ====== ANIMATE ====== */
+/* ========= ANIMATE ========= */
 function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   fireworks.forEach(f => {
@@ -120,11 +118,11 @@ function animate() {
 
   fireworks = fireworks.filter(f => f.life > 0);
 
-  /* 🎉 HIỆN CHỮ SAU 3 GIÂY KHÔNG CỬ CHỈ */
+  /* 🎉 HIỆN CHỮ CHẮC CHẮN */
   if (
-    Date.now() - lastGestureTime > 3000 &&
-    fireworkCounter >= MAX_FIREWORKS &&
-    !textShown
+    !textShown &&
+    fireworkCount >= MAX_FIREWORKS &&
+    Date.now() - lastGestureTime > 3000
   ) {
     document.getElementById('happyNewYear').className = 'visible';
     textShown = true;
@@ -132,3 +130,9 @@ function animate() {
 
   requestAnimationFrame(animate);
 }
+
+/* ========= RESIZE ========= */
+window.addEventListener('resize', () => {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+});
