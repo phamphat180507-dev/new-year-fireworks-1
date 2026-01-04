@@ -176,7 +176,15 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+function showHappyNewYear() {
+  const text = document.getElementById("happyNewYear");
+  if (text) {
+    text.style.display = "block";
+  }
+}
+
 
 // Chạy animate lần đầu (sẽ bị pause cho đến khi nhấn nút)
 // animate(); // Bỏ comment nếu muốn scene chạy liên tục từ đầu
+
 
