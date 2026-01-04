@@ -12,7 +12,7 @@ camera.position.set(0, 0, 20);
 // --- PHÁO HOA ---
 const fireworks = [];
 let fireworkCounter = 0;
-const MAX_FIREWORKS = 15; // Giới hạn số lượng pháo hoa
+const goalCount = 15;   // Bắn đủ 15 lần thì hiện chữ
 let hasShownNewYearText = false; // Cờ hiệu để chỉ hiện chữ 1 lần
 
 function createFirework(x, y, z) {
@@ -54,7 +54,10 @@ function createFirework(x, y, z) {
         lifeTime: 1500 + Math.random() * 1000 // Tồn tại 1.5 đến 2.5 giây
     });
 }
-
+fireworkCount++; 
+    if (fireworkCount >= goalCount) {
+        showNewYearMessage();
+    }
 // --- NHẬN DIỆN BÀN TAY (MEDIAPIPE) ---
 const videoElement = document.createElement('video');
 const hands = new window.Hands({
@@ -178,4 +181,10 @@ window.addEventListener('resize', () => {
 
 // Chạy animate lần đầu (sẽ bị pause cho đến khi nhấn nút)
 // animate(); // Bỏ comment nếu muốn scene chạy liên tục từ đầu
+function showNewYearMessage() {
+    const textElement = document.getElementById('newYearText');
+    if (textElement) {
+        textElement.classList.add('visible');
+    }
+}
 
