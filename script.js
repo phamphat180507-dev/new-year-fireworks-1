@@ -1,3 +1,6 @@
+// Dán 2 dòng này vào ngay đầu file script.js
+let fireworkCount = 0; 
+const goalCount = 10; // Bắn 10 chùm pháo là chữ hiện ra
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -12,7 +15,7 @@ camera.position.set(0, 0, 20);
 // --- PHÁO HOA ---
 const fireworks = [];
 let fireworkCounter = 0;
-const goalCount = 15;   // Bắn đủ 15 lần thì hiện chữ
+const MAX_FIREWORKS = 15; // Giới hạn số lượng pháo hoa
 let hasShownNewYearText = false; // Cờ hiệu để chỉ hiện chữ 1 lần
 
 function createFirework(x, y, z) {
@@ -54,10 +57,11 @@ function createFirework(x, y, z) {
         lifeTime: 1500 + Math.random() * 1000 // Tồn tại 1.5 đến 2.5 giây
     });
 }
-fireworkCount++; 
-    if (fireworkCount >= goalCount) {
-        showNewYearMessage();
-    }
+   fireworkCount++; 
+   if (fireworkCount >= goalCount) {
+       showNewYearMessage();
+   }
+}
 // --- NHẬN DIỆN BÀN TAY (MEDIAPIPE) ---
 const videoElement = document.createElement('video');
 const hands = new window.Hands({
@@ -187,4 +191,5 @@ function showNewYearMessage() {
         textElement.classList.add('visible');
     }
 }
+
 
